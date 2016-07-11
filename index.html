@@ -88,11 +88,15 @@ path {
 		.call(yAxis);
 	};
 	
-  // var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1Xui57HUR5Nf0R8XF5ZURPVVE6u5ZZTUdz-73xaIxvEE&output=html';
-	var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1Xui57HUR5Nf0R8XF5ZURPVVE6u5ZZTUdz-73xaIxvEE&output=html';
+  // another example of the spreadsheet url is 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1Xui57HUR5Nf0R8XF5ZURPVVE6u5ZZTUdz-73xaIxvEE&output=html';
+
+	var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5ZURPVVE6u5ZZTUdz-73xaIxvEE/pubhtml?gid=0&single=true';
+  
+  // for query to work, date must by in yyyy-MM-dd format, eg, "date > 2016-07-10"
   
   function renderSpreadsheetData() {
     Tabletop.init( { key: public_spreadsheet_url,
+					query: "date > 2016-07-10",
 					 debug: true,
                      callback: draw,
                      simpleSheet: true,
