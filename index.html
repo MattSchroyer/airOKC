@@ -118,6 +118,8 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			d.ozone = +d.ozone;
 		});
 		
+		data.sort(function(a, b){ return d3.ascending(a.date, b.date); });
+		
 		x.domain(d3.extent(data, function(d) { return d.date; }));
 		y.domain([0, d3.max(data, function(d) { return d.ozone; })]);
 		
@@ -224,6 +226,8 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			d.date = parseDate(d.date + " " + d.time);
 			d.ozone = +d.ozone;
 		});
+		
+		data.sort(function(a, b){ return d3.ascending(a.date, b.date); });
 		
 		// Set the ranges
 		x = d3.time.scale().range([0, width]);
