@@ -9,6 +9,8 @@ path {
   stroke-width: 2;
   fill: none;
 }
+
+
  
 .axis path,
 .axis line {
@@ -146,6 +148,58 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 				.attr("class", "y axis")
 				.call(yAxis);
 		
+		// Add reference line for moderate air quality level (0.060ppm)
+		svg.append("line")
+			   .attr("class", "moderate")
+			   .attr({
+				x1: 0,
+				y1: y(0.060),
+				x2: width,
+				y2: y(0.060)
+			   })
+			   .style("stroke", "yellow")
+			   .style("stroke-width", 2)
+			   .style("fill", "none");
+			   
+		// Add reference line for unhealthy for sensitive groups (0.076ppm)
+		svg.append("line")
+			   .attr("class", "sensitive")
+			   .attr({
+				x1: 0,
+				y1: y(0.076),
+				x2: width,
+				y2: y(0.076)
+			   })
+			   .style("stroke", "orange")
+			   .style("stroke-width", 2)
+			   .style("fill", "none");
+			   
+		// Add reference line for unhealthy for everyone (0.096ppm)
+		svg.append("line")
+			   .attr("class", "unhealthy")
+			   .attr({
+				x1: 0,
+				y1: y(0.096),
+				x2: width,
+				y2: y(0.096)
+			   })
+			   .style("stroke", "red")
+			   .style("stroke-width", 2)
+			   .style("fill", "none");
+			   
+		// Add reference line for very unhealthy (0.116ppm)
+		svg.append("line")
+			   .attr("class", "Vunhealthy")
+			   .attr({
+				x1: 0,
+				y1: y(0.116),
+				x2: width,
+				y2: y(0.116)
+			   })
+			   .style("stroke", "purple")
+			   .style("stroke-width", 2)
+			   .style("fill", "none");
+		
 		svg.append("rect")
 			.attr("class", "overlay")
 			.attr("width", width)
@@ -255,6 +309,46 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 		newSvg.select(".y.axis") // Change the y axis
 			.duration(750)
 			.call(yAxis);
+		
+		// Moving moderate air quality reference line
+		newSvg.select(".moderate")
+			.duration(750)
+			.attr({
+				x1: 0,
+				y1: y(0.060),
+				x2: width,
+				y2: y(0.060)
+			   });
+		
+		// Moving sensitive air quality reference line
+		newSvg.select(".sensitive")
+			.duration(750)
+			.attr({
+				x1: 0,
+				y1: y(0.076),
+				x2: width,
+				y2: y(0.076)
+			   });
+			   
+		// Moving unhealthy air quality reference line
+		newSvg.select(".unhealthy")
+			.duration(750)
+			.attr({
+				x1: 0,
+				y1: y(0.096),
+				x2: width,
+				y2: y(0.096)
+			   });
+		
+		// Moving unhealthy air quality reference line
+		newSvg.select(".Vunhealthy")
+			.duration(750)
+			.attr({
+				x1: 0,
+				y1: y(0.116),
+				x2: width,
+				y2: y(0.116)
+			   });
 			
 		svg.append("rect")
 			.attr("class", "overlay")
