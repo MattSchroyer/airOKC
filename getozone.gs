@@ -1,22 +1,23 @@
 function get_csv() { 
-  var url = 'http://www.deq.state.ok.us/aqdnew/monitoring/data/SITE0033.txt'; // Change this to the URL of your file
+  var url = 'http://www.deq.state.ok.us/aqdnew/monitoring/data/SITE0033.txt'; // URL of the file to scrape
   var response = UrlFetchApp.fetch(url);
-  // If there's an error in the response code, maybe tell someone
-  //MailApp.sendEmail("s.brown@york.ac.uk", "Error with CSV grabber:" + response.getResponseCode() , "Text of message goes here")
   Logger.log( "RESPONSE " + response.getResponseCode()); 
   var data = response.getContentText().toString();
   Logger.log( "DATA " + data);
-  return data //as text
+  return data
 }
 
 function importFromCSV() {
-  // This is the function to which you attach a trigger to run every hour  
-  var rawData = get_csv(); // gets the data, makes it nice...
+  // Function is triggered every hour
+  // Handles the difficult job of parsing the text table given from ODEQ
+  // Will vary greatly, depending on the data your individual project is using
   
+  var rawData = get_csv();
+
   var csvData = CSVToArray(rawData, "\t"); // turn into an array
   Logger.log("CSV ITEMS " + csvData.length);
   
-  //Write data to first sheet in this spreadsheet
+  // Gets the active spreadsheet
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getActiveSheet();
 
@@ -28,17 +29,25 @@ function importFromCSV() {
     Logger.log("It is blank!")
   };
   
+  // isPosted indicates whether this datapoint has been recorded before in the sheet
   var isPosted = false;
-  // rows 5-28 are previous day's numbers
-  //rows 40-63 are current day's numbers
+  
+  // Rows 5-28 are previous day's numbers
+  // Rows 40-63 are current day's numbers
+  // So we begin searching at row 40 for new datapoint
   for (var i = 40; i < csvData.length; i++) {
+    // If we haven't posted already...
     if (isPosted == false) {
+      // If there is a series of spaces in the cell for O3 reading, then you've reached end of the data
       if (csvData[i][1] == "          ") {
         Logger.log("i is:" + i);
+        // If that blank cell is not the first cell in the current day's numbers...
         if (i > 40) {
+          // ... then the data point is one row above where the blank cell was found
           var newData = [csvData[37][5],csvData[i-1][0],csvData[i-1][1],csvData[i-1][2],csvData[i-1][3],csvData[i-1][4]];
         }
         else {
+          // Otherwise, the data is in previous day's numbers
           for (var j = 27; j < 30; j++) {
             if (csvData[j][1] == "          ") {
               var newData = [csvData[2][5],csvData[j-1][0],csvData[j-1][1],csvData[j-1][2],csvData[j-1][3],csvData[j-1][4]];
@@ -48,18 +57,16 @@ function importFromCSV() {
             }
           }
         }
-        //sheet.appendRow(csvData[i-1]);
-        //Logger.log("Last row = " + sheet.getLastRow());
-        //Logger.log("Last col = " + sheet.getRange(sheet.getLastRow(),2));
-        //var myValue = sheet.getRange(sheet.getLastRow(),2).getValue();
-        //Logger.log(myValue);
-        //Logger.log(csvData[i-1][0]);
+        
         var timeString = newData[1].toString();
         Logger.log("timeString before: " + timeString);
-        var spaceIndex = timeString.indexOf(" ");
-        var timeString = timeString.substring(0, spaceIndex);
+        
+        // var spaceIndex = timeString.indexOf(" ");
+        // var timeString = timeString.substring(0, spaceIndex);
+        
+        var timeString = timeString.substring(0, 5);
+        newData[1] = timeString;
         Logger.log("timeString after: " + timeString);
-        Logger.log("spaceIndex in timeString: " + spaceIndex);
         var myLastRow = SpreadsheetApp.getActiveSheet().getLastRow();
         var myLastTime = SpreadsheetApp.getActiveSheet().getRange(myLastRow,2).setNumberFormat('@STRING@');
         var myLastTime = SpreadsheetApp.getActiveSheet().getRange(myLastRow,2).getValue();
@@ -77,15 +84,6 @@ function importFromCSV() {
       }
     }
   }
-  
-  /*
-  for (var i = 0; i < csvData.length; i++) {
-    sheet.getRange(i+1, 1, 1, csvData[i].length).setValues(new Array(csvData[i]));
-     //this might be where you would look at the data and maybe...
-    // cell.offset(i,i+2).setBackgroundColor("green"); 
-    //Logger.log( "i:" + i + " " + csvData[i] );
-  }
-  */
   
 }
 
@@ -117,7 +115,6 @@ function CSVToArray( strData, strDelimiter ){
   // Create an array to hold our individual pattern
   // matching groups.
   var arrMatches = null;
-  
   
   // Keep looping over the regular expression matches
   // until we can no longer find a match.
