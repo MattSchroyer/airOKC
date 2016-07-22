@@ -178,6 +178,13 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			   .style("stroke-width", 2)
 			   .style("fill", "none");
 			   
+		// Add label to reference line for moderate air quality
+		svg.append("text")
+				.attr("class", "moderateLabel")
+				.attr("x", 5)
+				.attr("y", y(0.060))
+				.text("moderate");
+			   
 		// Add reference line for unhealthy for sensitive groups (0.076ppm)
 		svg.append("line")
 			   .attr("class", "sensitive")
@@ -190,6 +197,13 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			   .style("stroke", "orange")
 			   .style("stroke-width", 2)
 			   .style("fill", "none");
+			   
+		// Add label to reference line for unhealthy for sensitive groups
+		svg.append("text")
+				.attr("class", "sensitiveLabel")
+				.attr("x", 5)
+				.attr("y", y(0.076))
+				.text("unhealthy for sensitive groups");
 			   
 		// Add reference line for unhealthy for everyone (0.096ppm)
 		svg.append("line")
@@ -204,6 +218,13 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			   .style("stroke-width", 2)
 			   .style("fill", "none");
 			   
+		// Add label to reference line for unhealthy for sensitive groups
+		svg.append("text")
+				.attr("class", "unhealthyLabel")
+				.attr("x", 5)
+				.attr("y", y(0.096))
+				.text("unhealthy");
+			   
 		// Add reference line for very unhealthy (0.116ppm)
 		svg.append("line")
 			   .attr("class", "Vunhealthy")
@@ -217,6 +238,13 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			   .style("stroke-width", 2)
 			   .style("fill", "none");
 		
+		// Add label to reference line for very unhealthy
+		svg.append("text")
+				.attr("class", "VunhealthyLabel")
+				.attr("x", 5)
+				.attr("y", y(0.116))
+				.text("very unhealthy");
+				
 		svg.append("rect")
 			.attr("class", "overlay")
 			.attr("width", width)
@@ -335,6 +363,12 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 				x2: width,
 				y2: y(0.060)
 			   });
+			   
+		// Move label for reference line for moderate air quality
+		newSvg.select(".moderateLabel")
+			.duration(750)
+			.attr("x", 5)
+			.attr("y", y(0.060));
 		
 		// Moving sensitive air quality reference line
 		newSvg.select(".sensitive")
@@ -345,6 +379,12 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 				x2: width,
 				y2: y(0.076)
 			   });
+		
+		// Move label for reference line for sensitive air quality
+		newSvg.select(".sensitiveLabel")
+			.duration(750)
+			.attr("x", 0)
+			.attr("y", y(0.076));
 			   
 		// Moving unhealthy air quality reference line
 		newSvg.select(".unhealthy")
@@ -355,8 +395,14 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 				x2: width,
 				y2: y(0.096)
 			   });
+			   
+		// Move label for reference line for unhealthy air quality
+		newSvg.select(".unhealthyLabel")
+			.duration(750)
+			.attr("x", 5)
+			.attr("y", y(0.096));
 		
-		// Moving unhealthy air quality reference line
+		// Moving very unhealthy air quality reference line
 		newSvg.select(".Vunhealthy")
 			.duration(750)
 			.attr({
@@ -365,6 +411,12 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 				x2: width,
 				y2: y(0.116)
 			   });
+			   
+		// Move label for reference line for very unhealthy air quality
+		newSvg.select(".VunhealthyLabel")
+			.duration(750)
+			.attr("x", 5)
+			.attr("y", y(0.116));
 			
 		svg.append("rect")
 			.attr("class", "overlay")
