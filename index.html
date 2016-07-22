@@ -30,13 +30,18 @@ path {
   pointer-events: all;
 }
 
-select {
-    width: 500px;
-    padding: 16px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: #f1f1f1;
-	font: 12px Arial;
+label {
+background-color:gray;
+padding: 5px 12px;
+font: 20px Arial;
+}
+
+input[type=radio] {
+display:none;
+}
+
+input[type=radio]:checked + label {
+background-color: steelblue;
 }
  
 </style>
@@ -46,13 +51,16 @@ select {
 <div id="canvas-svg"></div>
 
 <div id="details">
-History: 
-<select id="histSelect" onchange="renderSpreadsheetDataAgain()">
-  <option value=1>1 Day</option>
-  <option value=3>3 Days</option>
-  <option value=7>7 Days</option>
-  <option value=30>30 Days</option>
-</select>
+<form>
+	<input type="radio" name="histSelect" id="oneDay" value=1 onClick="renderSpreadsheetDataAgain(1)" checked>
+	<label for="oneDay">1 Day</label>	 
+	<input type="radio" name="histSelect" id="threeDays" onClick="renderSpreadsheetDataAgain(3)" value=3>
+	<label for="threeDays">3 Days</label>
+	<input type="radio" name="histSelect" id="sevenDays" onClick="renderSpreadsheetDataAgain(7)" value=7>
+	<label for="sevenDays">7 Days</label>
+	<input type="radio" name="histSelect" id="thirtyDays" onClick="renderSpreadsheetDataAgain(30)" value=30>
+	<label for="thirtyDays">30 Days</label>
+</form>
 <br>
 <br>
 Readings are scraped from the Oklahoma Department of Environmental Quality (ODEQ) <a href=http://www.deq.state.ok.us/aqdnew/monitoring/sites/site033.htm>monitor 401090033</a> on an hourly basis.
@@ -170,6 +178,13 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			   .style("stroke-width", 2)
 			   .style("fill", "none");
 			   
+		// Add label to reference line for moderate air quality
+		svg.append("text")
+				.attr("class", "moderateLabel")
+				.attr("x", 5)
+				.attr("y", y(0.060))
+				.text("moderate");
+			   
 		// Add reference line for unhealthy for sensitive groups (0.076ppm)
 		svg.append("line")
 			   .attr("class", "sensitive")
@@ -182,6 +197,13 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			   .style("stroke", "orange")
 			   .style("stroke-width", 2)
 			   .style("fill", "none");
+			   
+		// Add label to reference line for unhealthy for sensitive groups
+		svg.append("text")
+				.attr("class", "sensitiveLabel")
+				.attr("x", 5)
+				.attr("y", y(0.076))
+				.text("unhealthy for sensitive groups");
 			   
 		// Add reference line for unhealthy for everyone (0.096ppm)
 		svg.append("line")
@@ -196,6 +218,13 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			   .style("stroke-width", 2)
 			   .style("fill", "none");
 			   
+		// Add label to reference line for unhealthy for sensitive groups
+		svg.append("text")
+				.attr("class", "unhealthyLabel")
+				.attr("x", 5)
+				.attr("y", y(0.096))
+				.text("unhealthy");
+			   
 		// Add reference line for very unhealthy (0.116ppm)
 		svg.append("line")
 			   .attr("class", "Vunhealthy")
@@ -209,6 +238,13 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 			   .style("stroke-width", 2)
 			   .style("fill", "none");
 		
+		// Add label to reference line for very unhealthy
+		svg.append("text")
+				.attr("class", "VunhealthyLabel")
+				.attr("x", 5)
+				.attr("y", y(0.116))
+				.text("very unhealthy");
+				
 		svg.append("rect")
 			.attr("class", "overlay")
 			.attr("width", width)
@@ -231,7 +267,7 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
   
 	function renderSpreadsheetData() {
   
-		var histSelect = document.getElementById("histSelect").value;	
+		var histSelect = 1;	
 		var msec = new Date();
 		// Finds the number of milliseconds in the history, subtracts from current date, then turns that into a date
 		// One day is 8.64e+7 milliseconds
@@ -257,9 +293,8 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 		
 	}
   
-	function renderSpreadsheetDataAgain() {
+	function renderSpreadsheetDataAgain(histSelect) {
   
-		var histSelect = document.getElementById("histSelect").value;	
 		var msec = new Date();
 		var backDate = new Date(msec - (histSelect * 8.64e+7));
 		myDate = formatDateToString(backDate);
@@ -328,6 +363,12 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 				x2: width,
 				y2: y(0.060)
 			   });
+			   
+		// Move label for reference line for moderate air quality
+		newSvg.select(".moderateLabel")
+			.duration(750)
+			.attr("x", 5)
+			.attr("y", y(0.060));
 		
 		// Moving sensitive air quality reference line
 		newSvg.select(".sensitive")
@@ -338,6 +379,12 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 				x2: width,
 				y2: y(0.076)
 			   });
+		
+		// Move label for reference line for sensitive air quality
+		newSvg.select(".sensitiveLabel")
+			.duration(750)
+			.attr("x", 0)
+			.attr("y", y(0.076));
 			   
 		// Moving unhealthy air quality reference line
 		newSvg.select(".unhealthy")
@@ -348,8 +395,14 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 				x2: width,
 				y2: y(0.096)
 			   });
+			   
+		// Move label for reference line for unhealthy air quality
+		newSvg.select(".unhealthyLabel")
+			.duration(750)
+			.attr("x", 5)
+			.attr("y", y(0.096));
 		
-		// Moving unhealthy air quality reference line
+		// Moving very unhealthy air quality reference line
 		newSvg.select(".Vunhealthy")
 			.duration(750)
 			.attr({
@@ -358,6 +411,12 @@ Back-end is a <a href=https://docs.google.com/spreadsheets/d/1Xui57HUR5Nf0R8XF5Z
 				x2: width,
 				y2: y(0.116)
 			   });
+			   
+		// Move label for reference line for very unhealthy air quality
+		newSvg.select(".VunhealthyLabel")
+			.duration(750)
+			.attr("x", 5)
+			.attr("y", y(0.116));
 			
 		svg.append("rect")
 			.attr("class", "overlay")
